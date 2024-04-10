@@ -8,10 +8,10 @@ app.use(bodyParser.json());
 
 // Routes
 const userRoutes = require('./routes/userRoutes');
-// const courseRoutes = require('./routes/courseRoutes');
+const courseRoutes = require('./routes/courseRoutes');
 // const enrollmentRoutes = require('./routes/enrollmentRoutes');
 app.use('/api/users', userRoutes);
-// app.use('/api/courses', courseRoutes);
+app.use('/api', courseRoutes);
 // app.use('/api/enrollments', enrollmentRoutes);
 
 // Error handling middleware
