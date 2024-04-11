@@ -4,6 +4,11 @@ const { saveUser, findUserByEmail,findUserById } = require('../model/user');
 const User = require('../model/user');
 
 
+import { Resend } from 'resend';
+
+// Instantiate Resend with your API key
+const resend = new Resend('re_Q2cWK9oX_56DFtYATdtgyNRK1KQ3q2WdU');
+
 const register = async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -25,6 +30,22 @@ const register = async (req, res) => {
 
     // Create new user
     const newUser = await saveUser({ name, email, password: hashedPassword });
+
+    // Define the email data
+    const emailData = {
+      from: 'Acme <onboarding@resend.dev>',
+      to: [email],
+      subject: 'Welcome to Our Platform!',
+      html: `<strong>Dear ${name},</strong><br><br>Welcome to our platform. You have successfully registered.`,
+    };
+
+    // Send the email
+    const { error } = await resend.emails.send(emailData);
+    if (error) {
+      console.error('Error sending email:', error);
+    } else {
+      console.log('Email sent successfully');
+    }
 
     res.status(201).json({ message: 'User registered successfully', user: newUser });
   } catch (error) {
